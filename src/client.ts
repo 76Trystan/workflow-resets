@@ -5,22 +5,19 @@ async function run() {
   const connection = await Connection.connect();
   const client = new Client({ connection });
 
-  const workflowId = "workflow-resets-demo";
-
-  // Start workflow
   const handle = await client.workflow.start("mainWorkflow", {
-    taskQueue: "reset-workflow-queue",
-    workflowId,
+    taskQueue: "workflow-resets-queue",
+    workflowId: "reset-ui-demo",
     args: [{ startStep: 1 }]
   });
 
-  console.log(`Started workflow ${handle.workflowId}`);
+  console.log("Workflow started");
 
-  // reset after some time
+  // Reset after ~12 seconds (around step 12)
   setTimeout(async () => {
-    console.log("Sending reset -> step 10");
-    await handle.signal("resetToStep", 10);
-  }, 8000);
+    console.log("Sending RESET signal to step 5");
+    await handle.signal("resetToStep", 5);
+  }, 12000);
 }
 
 run().catch(console.error);

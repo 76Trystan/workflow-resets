@@ -5,11 +5,11 @@ import {
   sleep
 } from "@temporalio/workflow";
 
-import type * as activities from "../activities/stepActivities";
+import type * as acts from "../activities/activities";
 import { resetSignal } from "./resetSignal";
 
-const activityProxy = proxyActivities<typeof activities>({
-  startToCloseTimeout: "1 minute"
+const activities = proxyActivities<typeof acts>({
+  startToCloseTimeout: "2 minutes"
 });
 
 export interface WorkflowInput {
@@ -23,33 +23,51 @@ export async function mainWorkflow(input: WorkflowInput = {}) {
   let startStep = input.startStep ?? 1;
   let resetRequested: number | null = null;
 
-  // Signal handler
   setHandler(resetSignal, (step: number) => {
-    if (step < 1 || step > TOTAL_STEPS) {
-      throw new Error(`Invalid reset step ${step}`);
-    }
+    console.log("Reset signal received →", step);
     resetRequested = step;
   });
 
+  const steps = [
+    activities.activity1,
+    activities.activity2,
+    activities.activity3,
+    activities.activity4,
+    activities.activity5,
+    activities.activity6,
+    activities.activity7,
+    activities.activity8,
+    activities.activity9,
+    activities.activity10,
+    activities.activity11,
+    activities.activity12,
+    activities.activity13,
+    activities.activity14,
+    activities.activity15,
+    activities.activity16,
+    activities.activity17,
+    activities.activity18,
+    activities.activity19,
+    activities.activity20,
+  ];
+
   for (let step = startStep; step <= TOTAL_STEPS; step++) {
 
-    // Reset logic
     if (resetRequested !== null && resetRequested < step) {
 
-      console.log(`Resetting workflow → step ${resetRequested}`);
+      console.log(`ContinueAsNew -> restarting at step ${resetRequested}`);
 
       await continueAsNew<typeof mainWorkflow>({
         startStep: resetRequested
       });
     }
 
-    console.log(`Workflow executing step ${step}`);
+    console.log("Running step", step);
 
-    await activityProxy.stepActivity(step);
+    await steps[step - 1]();
 
-    // Allow signals to process
     await sleep(1);
   }
 
-  console.log("Workflow completed all steps");
+  console.log("Workflow finished all steps");
 }
