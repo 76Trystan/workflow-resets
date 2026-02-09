@@ -7,7 +7,7 @@ async function run() {
 
   const handle = await client.workflow.start("mainWorkflow", {
     taskQueue: "workflow-resets-queue",
-    workflowId: "reset-ui-demo",
+    workflowId: "reset-demo",
     args: [{ startStep: 1 }]
   });
 
