@@ -13,11 +13,11 @@ async function run() {
 
   console.log("Workflow started");
 
-  // Reset after ~12 seconds (around step 12)
+  // Reset at step
   setTimeout(async () => {
-    console.log("Sending RESET signal to step 5");
-    await handle.signal("resetToStep", 5);
-  }, 12000);
+    console.log("Sending RESET signal to step 10");
+    await handle.signal("resetToStep", 10);
+  }, 15000);
 }
 
 run().catch(console.error);
