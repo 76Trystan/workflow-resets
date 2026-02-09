@@ -27,7 +27,7 @@ export async function mainWorkflow(input: { startStep?: number } = {}) {
   let resetRequested: number | null = null;
 
   setHandler(resetSignal, (step: number) => {
-    console.log("Reset requested →", step);
+    console.log("Reset requested ->", step);
     resetRequested = step;
   });
 
