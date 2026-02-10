@@ -21,7 +21,7 @@ const store = proxyActivities<typeof storeActs>({
 export async function mainWorkflow(input: { startStep?: number } = {}) {
 
   const workflowId = workflowInfo().workflowId;
-  const TOTAL_STEPS = 20;
+  const TOTAL_STEPS = 10;
 
   let startStep = input.startStep ?? 1;
   let resetRequested: number | null = null;
@@ -42,16 +42,6 @@ export async function mainWorkflow(input: { startStep?: number } = {}) {
     activities.activity8,
     activities.activity9,
     activities.activity10,
-    activities.activity11,
-    activities.activity12,
-    activities.activity13,
-    activities.activity14,
-    activities.activity15,
-    activities.activity16,
-    activities.activity17,
-    activities.activity18,
-    activities.activity19,
-    activities.activity20,
   ];
 
   console.log(`Workflow started -> ID: ${workflowId}`);
