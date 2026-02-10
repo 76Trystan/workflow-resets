@@ -1,7 +1,6 @@
 import {
   proxyActivities,
   setHandler,
-  continueAsNew,
   workflowInfo,
   sleep
 } from "@temporalio/workflow";
@@ -27,7 +26,7 @@ export async function mainWorkflow(input: { startStep?: number } = {}) {
   let resetRequested: number | null = null;
 
   setHandler(resetSignal, (step: number) => {
-    console.log("Reset requested ->", step);
+    console.log(`Signal alert, reset is required at step ${step}`);
     resetRequested = step;
   });
 
@@ -56,13 +55,11 @@ export async function mainWorkflow(input: { startStep?: number } = {}) {
 
   for (let step = startStep; step <= TOTAL_STEPS; step++) {
 
-    // Reset logic
-    if (resetRequested !== null && resetRequested < step) {
-      console.log(`ContinueAsNew -> step ${resetRequested}`);
-
-      await continueAsNew<typeof mainWorkflow>({
-        startStep: resetRequested
-      });
+    // If reset was requested, clear cache from reset point onwards
+    if (resetRequested !== null && step === resetRequested) {
+      console.log(`Clearing cache from step ${resetRequested} onwards`);
+      await store.clearStepResultsFrom(workflowId, resetRequested);
+      resetRequested = null; // Reset the flag after handling
     }
 
     // Try load cached result
@@ -73,7 +70,7 @@ export async function mainWorkflow(input: { startStep?: number } = {}) {
       continue;
     }
 
-    console.log(`Executing step ${step}`);
+    console.log(`Activity executing step ${step} -> DB saves result`);
 
     const result = await steps[step - 1]();
 

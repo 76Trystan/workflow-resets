@@ -24,3 +24,24 @@ export async function getStepResult(
 
   return result;
 }
+
+export async function clearStepResultsFrom(
+  workflowId: string,
+  fromStep: number
+): Promise<void> {
+  if (!store[workflowId]) return;
+
+  // Delete all cached results from the specified step onwards
+  const stepsToDelete: number[] = [];
+  for (const stepStr in store[workflowId]) {
+    const step = parseInt(stepStr, 10);
+    if (step >= fromStep) {
+      stepsToDelete.push(step);
+      delete store[workflowId][step];
+    }
+  }
+
+  if (stepsToDelete.length > 0) {
+    console.log(`DB Cleared results for steps: ${stepsToDelete.join(", ")}`);
+  }
+}
