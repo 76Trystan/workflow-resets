@@ -2,13 +2,18 @@
   "name": "workflow-resets",
   "version": "1.0.0",
   "private": true,
+  "scripts": {
+    "dev": "concurrently \"temporal server start-dev\" \"npx ts-node src/worker.ts\"",
+    "client": "npx ts-node src/client.ts"
+  },
   "dependencies": {
     "@temporalio/client": "^1.14.1",
     "@temporalio/worker": "^1.14.1",
     "@temporalio/workflow": "^1.14.1"
   },
   "devDependencies": {
-    "typescript": "^5.9.3",
-    "ts-node": "^10.9.2"
+    "concurrently": "^9.2.1",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.3"
   }
 }
