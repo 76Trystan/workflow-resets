@@ -99,6 +99,24 @@ Activity executing step n -> Cached saves result
 Workflow finished
 ```
 
+### Example Demonstration
+
+- Workflow starts
+
+- Reset Trigger Occurs for activity 3 (After 10 seconds in this case).
+
+<img width="1426" height="649" alt="beforeReset" src="https://github.com/user-attachments/assets/37ecf41c-ed17-490f-8d24-4b5bb5f52047" />
+
+- Reset Triggered -> Workflow resets at Activity 3.
+
+- Reset continues as new workflow ID from Activity 3.
+
+<img width="1430" height="734" alt="afterReset" src="https://github.com/user-attachments/assets/578613ee-e815-47b4-a62c-e15a7b1d3722" />
+
+- Temporal UI workflow and ContinueAsNew:
+
+<img width="1441" height="330" alt="continueAsNew" src="https://github.com/user-attachments/assets/e4a8a3e2-95b5-489e-83d8-10d09f882a1c" />
+
 ### How It Works
 
 1. **Workflows Definition** ([src/workflows/workflow.ts](src/workflows/workflow.ts)):
