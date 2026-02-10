@@ -8,7 +8,7 @@ export async function saveStepResult(
   if (!store[workflowId]) store[workflowId] = {};
   store[workflowId][step] = result;
 
-  console.log(`DB Saved result -> WF:${workflowId} Step:${step}`);
+  console.log(`Cached result -> WF:${workflowId} Step:${step}`);
 }
 
 export async function getStepResult(
@@ -19,7 +19,7 @@ export async function getStepResult(
   const result = store[workflowId]?.[step] ?? null;
 
   if (result) {
-    console.log(`DB Loaded result -> WF:${workflowId} Step:${step}`);
+    console.log(`Cached loaded result -> WF:${workflowId} Step:${step}`);
   }
 
   return result;
@@ -42,6 +42,6 @@ export async function clearStepResultsFrom(
   }
 
   if (stepsToDelete.length > 0) {
-    console.log(`DB Cleared results for steps: ${stepsToDelete.join(", ")}`);
+    console.log(`Cached cleared results for steps: ${stepsToDelete.join(", ")}`);
   }
 }

@@ -54,7 +54,7 @@ export async function mainWorkflow(input: { startStep?: number } = {}) {
     if (cached) {
       console.log(`Skipping step ${step} -> using cached result`);
     } else {
-      console.log(`Activity executing step ${step} -> DB saves result`);
+      console.log(`Activity executing step ${step} -> Cached saves result`);
       const result = await steps[step - 1]();
       await store.saveStepResult(workflowId, step, result);
     }
