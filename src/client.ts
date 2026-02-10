@@ -12,7 +12,7 @@ async function run() {
 
   console.log("Workflow started\n");
 
-  // Send signal when workflow reaches step 10
+  // Send signal when workflow reaches whatever step is at 15 seconds.
   setTimeout(async () => {
     console.log("\nSending signal: RESET TO STEP 5\n");
     await handle.signal("resetToStep", 7);
