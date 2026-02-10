@@ -1,7 +1,6 @@
 import { Client, Connection } from "@temporalio/client";
 
 async function run() {
-
   const connection = await Connection.connect();
   const client = new Client({ connection });
 
@@ -11,13 +10,13 @@ async function run() {
     args: [{ startStep: 1 }]
   });
 
-  console.log("Workflow started");
+  console.log("Workflow started\n");
 
-  // Reset at step
+  // Send signal when workflow reaches step 10
   setTimeout(async () => {
-    console.log("Sending RESET signal to step 10");
-    await handle.signal("resetToStep", 10);
-  }, 15000);
+    console.log("\nSending signal: RESET TO STEP 2\n");
+    await handle.signal("resetToStep", 2);
+  }, 10000);  // 10 seconds = when step 10 is executing
 }
 
 run().catch(console.error);

@@ -1,6 +1,7 @@
 import {
   proxyActivities,
   setHandler,
+  continueAsNew,
   workflowInfo,
   sleep
 } from "@temporalio/workflow";
@@ -26,7 +27,7 @@ export async function mainWorkflow(input: { startStep?: number } = {}) {
   let resetRequested: number | null = null;
 
   setHandler(resetSignal, (step: number) => {
-    console.log(`Signal alert, reset is required at step ${step}`);
+    console.log(`\nSignal Received -> reset is required at step ${step}\n`);
     resetRequested = step;
   });
 
@@ -53,32 +54,37 @@ export async function mainWorkflow(input: { startStep?: number } = {}) {
     activities.activity20,
   ];
 
-  for (let step = startStep; step <= TOTAL_STEPS; step++) {
+  console.log(`Workflow started -> ID: ${workflowId}`);
 
-    // If reset was requested, clear cache from reset point onwards
-    if (resetRequested !== null && step === resetRequested) {
-      console.log(`Clearing cache from step ${resetRequested} onwards`);
-      await store.clearStepResultsFrom(workflowId, resetRequested);
-      resetRequested = null; // Reset the flag after handling
-    }
+  for (let step = startStep; step <= TOTAL_STEPS; step++) {
 
     // Try load cached result
     const cached = await store.getStepResult(workflowId, step);
 
     if (cached) {
       console.log(`Skipping step ${step} -> using cached result`);
-      continue;
+    } else {
+      console.log(`Activity executing step ${step} -> DB saves result`);
+      const result = await steps[step - 1]();
+      await store.saveStepResult(workflowId, step, result);
     }
 
-    console.log(`Activity executing step ${step} -> DB saves result`);
+    // Check for reset AFTER executing/skipping the step
+    if (resetRequested !== null && resetRequested < step) {
+      console.log(`\nReset Triggered! -> Going back to step ${resetRequested}\n`);
+      
+      // Clear cache from reset point onwards
+      await store.clearStepResultsFrom(workflowId, resetRequested);
+      
+      // Restart workflow from reset step
+      await continueAsNew<typeof mainWorkflow>({
+        startStep: resetRequested
+      });
+    }
 
-    const result = await steps[step - 1]();
-
-    // Save result externally
-    await store.saveStepResult(workflowId, step, result);
-
-    await sleep(1);
+    // Allow signals to be processed between steps
+    await sleep(100);
   }
 
-  console.log("Workflow finished");
+  console.log(`Workflow finished`);
 }
