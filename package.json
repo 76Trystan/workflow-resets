@@ -7,9 +7,14 @@
     "client": "npx ts-node src/client.ts"
   },
   "dependencies": {
+    "@langchain/core": "^1.1.24",
+    "@langchain/langgraph": "^1.1.4",
+    "@langchain/ollama": "^1.2.2",
     "@temporalio/client": "^1.14.1",
     "@temporalio/worker": "^1.14.1",
-    "@temporalio/workflow": "^1.14.1"
+    "@temporalio/workflow": "^1.14.1",
+    "langchain": "^1.2.24",
+    "zod": "^4.3.6"
   },
   "devDependencies": {
     "concurrently": "^9.2.1",
