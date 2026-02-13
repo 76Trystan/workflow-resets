@@ -1,5 +1,16 @@
 import { Client, Connection } from "@temporalio/client";
 
+
+const minSignal = 6000;
+const maxSignal = 8000
+const randomSignal = Math.floor(Math.random() * (maxSignal - minSignal + 1)) + minSignal;
+
+const minStep = 1;
+const maxStep = 4;
+const randomStep = Math.floor(Math.random() * (maxStep - minStep + 1)) + minStep;
+
+
+
 async function run() {
   const connection = await Connection.connect();
   const client = new Client({ connection });
@@ -12,11 +23,11 @@ async function run() {
 
   console.log("Workflow started\n");
 
-  // Send signal when workflow reaches whatever step is at 10 seconds.
+  // Send random during workflow.
   setTimeout(async () => {
-    console.log("\nSending signal: RESET TO STEP 3\n");
-    await handle.signal("resetToStep", 3);
-  }, 11000); // signal after 10 seconds, adjust as needed to hit the desired step or change completely to different type of trigger
+    console.log(`\nSending signal: RESET TO STEP ${randomStep}\n`);
+    await handle.signal("resetToStep", randomStep);
+  }, randomSignal); // signal at random
 }
 
 run().catch(console.error);
